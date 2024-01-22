@@ -43,6 +43,7 @@ export const Tabs = () => {
         component={SearchScreen}
         options={{
           tabBarLabel: 'Búsqueda',
+          headerShown: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({color}) => (
             <Icon name="search-outline" color={color} size={25} />
