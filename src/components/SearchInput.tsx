@@ -6,14 +6,21 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useDebouncedValue} from '../hooks/useDebouncedValue';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
 export const SearchInput = ({style}: Props) => {
+  const [textValue, setTextValue] = useState('');
+
+  const debouncedValue = useDebouncedValue(textValue);
+  useEffect(() => {
+    console.log({debouncedValue});
+  }, [debouncedValue]);
   return (
     <View
       style={{
@@ -29,6 +36,8 @@ export const SearchInput = ({style}: Props) => {
           placeholder="Buscar pokemon"
           autoCapitalize="none"
           autoCorrect={false}
+          value={textValue}
+          onChangeText={setTextValue}
         />
         <Icon name="search-outline" color="grey" size={25} />
       </View>
