@@ -12,7 +12,7 @@ export type RootStackParams = {
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
-export const Navigator = () => {
+export const Tab1 = () => {
   return (
     <Stack.Navigator
       screenOptions={{
