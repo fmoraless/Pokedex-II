@@ -1,17 +1,38 @@
 import {View, Text, Platform, FlatList, Dimensions} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {SearchInput} from '../components/SearchInput';
 import {usePokemonSearch} from '../hooks/usePokemonSearch';
 import {styles} from '../../theme/appTheme';
 import PokemonCard from '../components/PokemonCard';
 import Loading from '../components/Loading';
+import {SimplePokemon} from '../interfaces/pokemonInterfaces';
 
 const screenWidth = Dimensions.get('window').width;
 
 const SearchScreen = () => {
   const {top} = useSafeAreaInsets();
   const {isFetching, simplePokemonList} = usePokemonSearch();
+  const [pokemonFiltered, setPokemonFiltered] = useState<SimplePokemon[]>([]);
+
+  const [term, setTerm] = useState('');
+
+  useEffect(() => {
+    if (term.length === 0) {
+      return setPokemonFiltered([]);
+    }
+
+    if (isNaN(Number(term))) {
+      setPokemonFiltered(
+        simplePokemonList.filter(poke =>
+          poke.name.toLocaleLowerCase().includes(term.toLocaleLowerCase()),
+        ),
+      );
+    } else {
+      const pokemonById = simplePokemonList.find(poke => poke.id === term);
+      setPokemonFiltered(pokemonById ? [pokemonById] : []);
+    }
+  }, [term]);
 
   if (isFetching) {
     return <Loading />;
@@ -21,10 +42,10 @@ const SearchScreen = () => {
     <View
       style={{
         flex: 1,
-
         marginHorizontal: 20,
       }}>
       <SearchInput
+        onDebounce={value => setTerm(value)}
         style={{
           position: 'absolute',
           zIndex: 999,
@@ -34,7 +55,7 @@ const SearchScreen = () => {
       />
 
       <FlatList
-        data={simplePokemonList}
+        data={pokemonFiltered}
         keyExtractor={pokemon => pokemon.id}
         showsVerticalScrollIndicator={false}
         numColumns={2}
@@ -46,7 +67,7 @@ const SearchScreen = () => {
               paddingBottom: 10,
               marginTop: Platform.OS === 'ios' ? top + 60 : top + 80,
             }}>
-            Pokedex
+            {term}
           </Text>
         }
         renderItem={({item}) => <PokemonCard pokemon={item} />}
