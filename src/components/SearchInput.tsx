@@ -30,6 +30,7 @@ export const SearchInput = ({style, onDebounce}: Props) => {
       }}>
       <View style={styles.textBackground}>
         <TextInput
+          // eslint-disable-next-line react-native/no-inline-styles
           style={{
             ...styles.textInput,
             top: Platform.OS === 'ios' ? 0 : 2,

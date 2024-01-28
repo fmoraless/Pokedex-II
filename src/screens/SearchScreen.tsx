@@ -1,9 +1,16 @@
-import {View, Text, Platform, FlatList, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  FlatList,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {SearchInput} from '../components/SearchInput';
 import {usePokemonSearch} from '../hooks/usePokemonSearch';
-import {styles} from '../../theme/appTheme';
+import {styles as globalStyles} from '../../theme/appTheme';
 import PokemonCard from '../components/PokemonCard';
 import Loading from '../components/Loading';
 import {SimplePokemon} from '../interfaces/pokemonInterfaces';
@@ -39,16 +46,11 @@ const SearchScreen = () => {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        marginHorizontal: 20,
-      }}>
+    <View style={styles.container}>
       <SearchInput
         onDebounce={value => setTerm(value)}
         style={{
-          position: 'absolute',
-          zIndex: 999,
+          ...styles.inputPosition,
           width: screenWidth - 40,
           top: Platform.OS === 'ios' ? top : top + 30,
         }}
@@ -62,18 +64,32 @@ const SearchScreen = () => {
         ListHeaderComponent={
           <Text
             style={{
-              ...styles.title,
-              ...styles.globalMargin,
-              paddingBottom: 10,
+              ...globalStyles.title,
+              ...globalStyles.globalMargin,
+              ...styles.listPadding,
               marginTop: Platform.OS === 'ios' ? top + 60 : top + 80,
             }}>
             {term}
           </Text>
         }
         renderItem={({item}) => <PokemonCard pokemon={item} />}
+        keyboardDismissMode="on-drag"
       />
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginHorizontal: 20,
+  },
+  inputPosition: {
+    position: 'absolute',
+    zIndex: 999,
+  },
+  listPadding: {
+    paddingBottom: 10,
+  },
+});
 export default SearchScreen;
